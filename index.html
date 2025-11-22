@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De Arroz & Yap Pathfinding Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Pathfinding Visualizer</h1>
+    <p class="subtitle">Explore different pathfinding algorithms</p>
+    
+    <div id="controls">
+        <div class="controls-section">
+            <div class="section-title">Setup Mode</div>
+            <div class="controls-row">
+                <button id="setStartBtn">🟢 Set Start</button>
+                <button id="setEndBtn">🔴 Set End</button>
+                <button id="setBarriersBtn">⬛ Draw Barriers</button>
+            </div>
+        </div>
+        
+        <div class="controls-section">
+            <div class="section-title">Algorithms</div>
+            <div class="controls-row">
+                <button id="runBtn" class="algo-btn">A* Search</button>
+                <button id="runDijkstraBtn" class="algo-btn">Dijkstra's</button>
+                <button id="runBfsBtn" class="algo-btn">BFS</button>
+                <button id="runDfsBtn" class="algo-btn">DFS</button>
+                <button id="runGreedyBtn" class="algo-btn">Greedy Best-First</button>
+            </div>
+        </div>
+        
+        <div class="controls-section">
+            <div class="section-title">Tools</div>
+            <div class="controls-row">
+                <button id="showWeightsBtn">📊 Show Weights</button>
+                <button id="clearBtn">🧹 Clear Path</button>
+                <button id="clearBarriersBtn">🗑️ Clear Barriers</button>
+                <button id="resetBtn">🔄 Reset Grid</button>
+            </div>
+        </div>
+        
+        <div id="runtime"></div>
+    </div>
+
+    <div id="grid"></div>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-box" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);"></div>
+            <span>Start</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);"></div>
+            <span>End</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background: #2d3748;"></div>
+            <span>Barrier</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+            <span>Visited</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background: linear-gradient(135deg, #e6a400 0%, #1a4d6b 100%);"></div>
+            <span>Path</span>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script src="ui.js"></script>
+</body>
+</html>
