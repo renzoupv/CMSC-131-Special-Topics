@@ -1612,6 +1612,10 @@ var _run_dijkstra = Module['_run_dijkstra'] = makeInvalidEarlyAccess('_run_dijks
 var _run_bfs = Module['_run_bfs'] = makeInvalidEarlyAccess('_run_bfs');
 var _run_dfs = Module['_run_dfs'] = makeInvalidEarlyAccess('_run_dfs');
 var _run_greedy = Module['_run_greedy'] = makeInvalidEarlyAccess('_run_greedy');
+var _run_weighted_astar = Module['_run_weighted_astar'] = makeInvalidEarlyAccess('_run_weighted_astar');
+var _run_bidirectional = Module['_run_bidirectional'] = makeInvalidEarlyAccess('_run_bidirectional');
+var _generate_random_maze = Module['_generate_random_maze'] = makeInvalidEarlyAccess('_generate_random_maze');
+var _get_node_walkable = Module['_get_node_walkable'] = makeInvalidEarlyAccess('_get_node_walkable');
 var _get_path_length = Module['_get_path_length'] = makeInvalidEarlyAccess('_get_path_length');
 var _get_path_x = Module['_get_path_x'] = makeInvalidEarlyAccess('_get_path_x');
 var _get_path_y = Module['_get_path_y'] = makeInvalidEarlyAccess('_get_path_y');
@@ -1638,6 +1642,10 @@ function assignWasmExports(wasmExports) {
   assert(typeof wasmExports['run_bfs'] != 'undefined', 'missing Wasm export: run_bfs');
   assert(typeof wasmExports['run_dfs'] != 'undefined', 'missing Wasm export: run_dfs');
   assert(typeof wasmExports['run_greedy'] != 'undefined', 'missing Wasm export: run_greedy');
+  assert(typeof wasmExports['run_weighted_astar'] != 'undefined', 'missing Wasm export: run_weighted_astar');
+  assert(typeof wasmExports['run_bidirectional'] != 'undefined', 'missing Wasm export: run_bidirectional');
+  assert(typeof wasmExports['generate_random_maze'] != 'undefined', 'missing Wasm export: generate_random_maze');
+  assert(typeof wasmExports['get_node_walkable'] != 'undefined', 'missing Wasm export: get_node_walkable');
   assert(typeof wasmExports['get_path_length'] != 'undefined', 'missing Wasm export: get_path_length');
   assert(typeof wasmExports['get_path_x'] != 'undefined', 'missing Wasm export: get_path_x');
   assert(typeof wasmExports['get_path_y'] != 'undefined', 'missing Wasm export: get_path_y');
@@ -1661,6 +1669,10 @@ function assignWasmExports(wasmExports) {
   _run_bfs = Module['_run_bfs'] = createExportWrapper('run_bfs', 4);
   _run_dfs = Module['_run_dfs'] = createExportWrapper('run_dfs', 4);
   _run_greedy = Module['_run_greedy'] = createExportWrapper('run_greedy', 4);
+  _run_weighted_astar = Module['_run_weighted_astar'] = createExportWrapper('run_weighted_astar', 4);
+  _run_bidirectional = Module['_run_bidirectional'] = createExportWrapper('run_bidirectional', 4);
+  _generate_random_maze = Module['_generate_random_maze'] = createExportWrapper('generate_random_maze', 1);
+  _get_node_walkable = Module['_get_node_walkable'] = createExportWrapper('get_node_walkable', 2);
   _get_path_length = Module['_get_path_length'] = createExportWrapper('get_path_length', 0);
   _get_path_x = Module['_get_path_x'] = createExportWrapper('get_path_x', 1);
   _get_path_y = Module['_get_path_y'] = createExportWrapper('get_path_y', 1);
