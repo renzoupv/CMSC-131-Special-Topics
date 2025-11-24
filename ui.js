@@ -24,7 +24,9 @@ Module.onRuntimeInitialized = () => {
         document.getElementById('runDijkstraBtn'),
         document.getElementById('runBfsBtn'),
         document.getElementById('runDfsBtn'),
-        document.getElementById('runGreedyBtn')
+        document.getElementById('runGreedyBtn'),
+        document.getElementById('runWeightedAstarBtn'),      
+        document.getElementById('runBidirectionalBtn')   
     ];
     
     gridContainer.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 28px)`;
@@ -126,11 +128,7 @@ Module.onRuntimeInitialized = () => {
     
     // Clear path button
     clearBtn.addEventListener('click', () => {
-        gridDivs.forEach(c => {
-            c.classList.remove('visited', 'path');
-            const oldText = c.querySelector('.weight');
-            if (oldText) oldText.remove();
-        });
+        clearPath();
         runtimeDisplay.classList.remove('show');
         showToast('Path Cleared', 'Visualization cleared successfully', 'success');
     });
@@ -228,6 +226,16 @@ Module.onRuntimeInitialized = () => {
             await new Promise(r => setTimeout(r, 25));
         }
     }
+
+    function clearPath() {
+        gridDivs.forEach(c => {
+            c.classList.remove('visited', 'path');
+            const oldText = c.querySelector('.weight');
+            if (oldText) oldText.remove();
+        });
+        runtimeDisplay.classList.remove('show');
+    }
+
     
     document.getElementById('showWeightsBtn').addEventListener('click', () => {
         for (let y = 0; y < GRID_SIZE; y++) {
@@ -317,6 +325,34 @@ Module.onRuntimeInitialized = () => {
 
     document.getElementById('runGreedyBtn').addEventListener('click', async () => {
     await runAlgorithm('run_greedy', 'Greedy Best-First Search');
+    });
+
+    document.getElementById('runWeightedAstarBtn').addEventListener('click', async () => {
+    await runAlgorithm('run_weighted_astar', 'Weighted A* (ε=1.5)');
+    });
+
+    document.getElementById('runBidirectionalBtn').addEventListener('click', async () => {
+        await runAlgorithm('run_bidirectional', 'Bidirectional BFS');
+    });
+
+    document.getElementById('mazeRandomBtn').addEventListener('click', () => {
+        clearPath();
+        Module.ccall('generate_random_maze', null, ['number'], [30]); // 30% barriers
+        
+        // Update grid display
+        gridDivs.forEach((cell, idx) => {
+            const x = idx % GRID_SIZE;
+            const y = Math.floor(idx / GRID_SIZE);
+            const walkable = Module.ccall('get_node_walkable', 'number', ['number', 'number'], [x, y]);
+            
+            if (!walkable && !cell.classList.contains('start') && !cell.classList.contains('end')) {
+                cell.classList.add('barrier');
+            } else {
+                cell.classList.remove('barrier');
+            }
+        });
+        
+        showToast('Maze Generated', 'Random barriers (30% density) created!', 'success');
     });
     
     updateMode('barriers');
