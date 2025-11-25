@@ -26,7 +26,9 @@ Module.onRuntimeInitialized = () => {
         document.getElementById('runDfsBtn'),
         document.getElementById('runGreedyBtn'),
         document.getElementById('runWeightedAstarBtn'),      
-        document.getElementById('runBidirectionalBtn')   
+        document.getElementById('runBidirectionalBtn'),
+        document.getElementById('runBeamBtn'), 
+        document.getElementById('runBiAstarBtn') 
     ];
     
     gridContainer.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 28px)`;
@@ -333,6 +335,14 @@ Module.onRuntimeInitialized = () => {
 
     document.getElementById('runBidirectionalBtn').addEventListener('click', async () => {
         await runAlgorithm('run_bidirectional', 'Bidirectional BFS');
+    });
+
+    document.getElementById('runBeamBtn').addEventListener('click', async () => {
+        await runAlgorithm('run_beam_search', 'Beam Search');
+    });
+
+    document.getElementById('runBiAstarBtn').addEventListener('click', async () => {
+        await runAlgorithm('run_bi_astar', 'Bidirectional A*');
     });
 
     document.getElementById('mazeRandomBtn').addEventListener('click', () => {

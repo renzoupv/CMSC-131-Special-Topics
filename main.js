@@ -14,29 +14,22 @@
 
   var TARGET_NOT_SUPPORTED = 2147483647;
 
-  // Note: We use a typeof check here instead of optional chaining using
-  // globalThis because older browsers might not have globalThis defined.
-  var currentNodeVersion = typeof process !== 'undefined' && process.versions?.node ? humanReadableVersionToPacked(process.versions.node) : TARGET_NOT_SUPPORTED;
+  var currentNodeVersion = typeof process !== 'undefined' && process?.versions?.node ? humanReadableVersionToPacked(process.versions.node) : TARGET_NOT_SUPPORTED;
   if (currentNodeVersion < 160000) {
     throw new Error(`This emscripten-generated code requires node v${ packedVersionToHumanReadable(160000) } (detected v${packedVersionToHumanReadable(currentNodeVersion)})`);
   }
 
-  var userAgent = typeof navigator !== 'undefined' && navigator.userAgent;
-  if (!userAgent) {
-    return;
-  }
-
-  var currentSafariVersion = userAgent.includes("Safari/") && userAgent.match(/Version\/(\d+\.?\d*\.?\d*)/) ? humanReadableVersionToPacked(userAgent.match(/Version\/(\d+\.?\d*\.?\d*)/)[1]) : TARGET_NOT_SUPPORTED;
+  var currentSafariVersion = typeof navigator !== 'undefined' && navigator?.userAgent?.includes("Safari/") && navigator.userAgent.match(/Version\/(\d+\.?\d*\.?\d*)/) ? humanReadableVersionToPacked(navigator.userAgent.match(/Version\/(\d+\.?\d*\.?\d*)/)[1]) : TARGET_NOT_SUPPORTED;
   if (currentSafariVersion < 150000) {
     throw new Error(`This emscripten-generated code requires Safari v${ packedVersionToHumanReadable(150000) } (detected v${currentSafariVersion})`);
   }
 
-  var currentFirefoxVersion = userAgent.match(/Firefox\/(\d+(?:\.\d+)?)/) ? parseFloat(userAgent.match(/Firefox\/(\d+(?:\.\d+)?)/)[1]) : TARGET_NOT_SUPPORTED;
+  var currentFirefoxVersion = typeof navigator !== 'undefined' && navigator?.userAgent?.match(/Firefox\/(\d+(?:\.\d+)?)/) ? parseFloat(navigator.userAgent.match(/Firefox\/(\d+(?:\.\d+)?)/)[1]) : TARGET_NOT_SUPPORTED;
   if (currentFirefoxVersion < 79) {
     throw new Error(`This emscripten-generated code requires Firefox v79 (detected v${currentFirefoxVersion})`);
   }
 
-  var currentChromeVersion = userAgent.match(/Chrome\/(\d+(?:\.\d+)?)/) ? parseFloat(userAgent.match(/Chrome\/(\d+(?:\.\d+)?)/)[1]) : TARGET_NOT_SUPPORTED;
+  var currentChromeVersion = typeof navigator !== 'undefined' && navigator?.userAgent?.match(/Chrome\/(\d+(?:\.\d+)?)/) ? parseFloat(navigator.userAgent.match(/Chrome\/(\d+(?:\.\d+)?)/)[1]) : TARGET_NOT_SUPPORTED;
   if (currentChromeVersion < 85) {
     throw new Error(`This emscripten-generated code requires Chrome v85 (detected v${currentChromeVersion})`);
   }
@@ -1614,6 +1607,8 @@ var _run_dfs = Module['_run_dfs'] = makeInvalidEarlyAccess('_run_dfs');
 var _run_greedy = Module['_run_greedy'] = makeInvalidEarlyAccess('_run_greedy');
 var _run_weighted_astar = Module['_run_weighted_astar'] = makeInvalidEarlyAccess('_run_weighted_astar');
 var _run_bidirectional = Module['_run_bidirectional'] = makeInvalidEarlyAccess('_run_bidirectional');
+var _run_beam_search = Module['_run_beam_search'] = makeInvalidEarlyAccess('_run_beam_search');
+var _run_bi_astar = Module['_run_bi_astar'] = makeInvalidEarlyAccess('_run_bi_astar');
 var _generate_random_maze = Module['_generate_random_maze'] = makeInvalidEarlyAccess('_generate_random_maze');
 var _get_node_walkable = Module['_get_node_walkable'] = makeInvalidEarlyAccess('_get_node_walkable');
 var _get_path_length = Module['_get_path_length'] = makeInvalidEarlyAccess('_get_path_length');
@@ -1635,58 +1630,62 @@ var wasmMemory = makeInvalidEarlyAccess('wasmMemory');
 
 function assignWasmExports(wasmExports) {
   assert(typeof wasmExports['init_grid'] != 'undefined', 'missing Wasm export: init_grid');
-  assert(typeof wasmExports['set_barrier'] != 'undefined', 'missing Wasm export: set_barrier');
-  assert(typeof wasmExports['clear_barriers'] != 'undefined', 'missing Wasm export: clear_barriers');
-  assert(typeof wasmExports['run_astar'] != 'undefined', 'missing Wasm export: run_astar');
-  assert(typeof wasmExports['run_dijkstra'] != 'undefined', 'missing Wasm export: run_dijkstra');
-  assert(typeof wasmExports['run_bfs'] != 'undefined', 'missing Wasm export: run_bfs');
-  assert(typeof wasmExports['run_dfs'] != 'undefined', 'missing Wasm export: run_dfs');
-  assert(typeof wasmExports['run_greedy'] != 'undefined', 'missing Wasm export: run_greedy');
-  assert(typeof wasmExports['run_weighted_astar'] != 'undefined', 'missing Wasm export: run_weighted_astar');
-  assert(typeof wasmExports['run_bidirectional'] != 'undefined', 'missing Wasm export: run_bidirectional');
-  assert(typeof wasmExports['generate_random_maze'] != 'undefined', 'missing Wasm export: generate_random_maze');
-  assert(typeof wasmExports['get_node_walkable'] != 'undefined', 'missing Wasm export: get_node_walkable');
-  assert(typeof wasmExports['get_path_length'] != 'undefined', 'missing Wasm export: get_path_length');
-  assert(typeof wasmExports['get_path_x'] != 'undefined', 'missing Wasm export: get_path_x');
-  assert(typeof wasmExports['get_path_y'] != 'undefined', 'missing Wasm export: get_path_y');
-  assert(typeof wasmExports['is_visited'] != 'undefined', 'missing Wasm export: is_visited');
-  assert(typeof wasmExports['get_node_g'] != 'undefined', 'missing Wasm export: get_node_g');
-  assert(typeof wasmExports['fflush'] != 'undefined', 'missing Wasm export: fflush');
-  assert(typeof wasmExports['emscripten_stack_init'] != 'undefined', 'missing Wasm export: emscripten_stack_init');
-  assert(typeof wasmExports['emscripten_stack_get_free'] != 'undefined', 'missing Wasm export: emscripten_stack_get_free');
-  assert(typeof wasmExports['emscripten_stack_get_base'] != 'undefined', 'missing Wasm export: emscripten_stack_get_base');
-  assert(typeof wasmExports['emscripten_stack_get_end'] != 'undefined', 'missing Wasm export: emscripten_stack_get_end');
-  assert(typeof wasmExports['_emscripten_stack_restore'] != 'undefined', 'missing Wasm export: _emscripten_stack_restore');
-  assert(typeof wasmExports['_emscripten_stack_alloc'] != 'undefined', 'missing Wasm export: _emscripten_stack_alloc');
-  assert(typeof wasmExports['emscripten_stack_get_current'] != 'undefined', 'missing Wasm export: emscripten_stack_get_current');
-  assert(typeof wasmExports['memory'] != 'undefined', 'missing Wasm export: memory');
-  assert(typeof wasmExports['__indirect_function_table'] != 'undefined', 'missing Wasm export: __indirect_function_table');
   _init_grid = Module['_init_grid'] = createExportWrapper('init_grid', 0);
+  assert(typeof wasmExports['set_barrier'] != 'undefined', 'missing Wasm export: set_barrier');
   _set_barrier = Module['_set_barrier'] = createExportWrapper('set_barrier', 2);
+  assert(typeof wasmExports['clear_barriers'] != 'undefined', 'missing Wasm export: clear_barriers');
   _clear_barriers = Module['_clear_barriers'] = createExportWrapper('clear_barriers', 0);
+  assert(typeof wasmExports['run_astar'] != 'undefined', 'missing Wasm export: run_astar');
   _run_astar = Module['_run_astar'] = createExportWrapper('run_astar', 4);
+  assert(typeof wasmExports['run_dijkstra'] != 'undefined', 'missing Wasm export: run_dijkstra');
   _run_dijkstra = Module['_run_dijkstra'] = createExportWrapper('run_dijkstra', 4);
+  assert(typeof wasmExports['run_bfs'] != 'undefined', 'missing Wasm export: run_bfs');
   _run_bfs = Module['_run_bfs'] = createExportWrapper('run_bfs', 4);
+  assert(typeof wasmExports['run_dfs'] != 'undefined', 'missing Wasm export: run_dfs');
   _run_dfs = Module['_run_dfs'] = createExportWrapper('run_dfs', 4);
+  assert(typeof wasmExports['run_greedy'] != 'undefined', 'missing Wasm export: run_greedy');
   _run_greedy = Module['_run_greedy'] = createExportWrapper('run_greedy', 4);
+  assert(typeof wasmExports['run_weighted_astar'] != 'undefined', 'missing Wasm export: run_weighted_astar');
   _run_weighted_astar = Module['_run_weighted_astar'] = createExportWrapper('run_weighted_astar', 4);
+  assert(typeof wasmExports['run_bidirectional'] != 'undefined', 'missing Wasm export: run_bidirectional');
   _run_bidirectional = Module['_run_bidirectional'] = createExportWrapper('run_bidirectional', 4);
+  assert(typeof wasmExports['run_beam_search'] != 'undefined', 'missing Wasm export: run_beam_search');
+  _run_beam_search = Module['_run_beam_search'] = createExportWrapper('run_beam_search', 4);
+  assert(typeof wasmExports['run_bi_astar'] != 'undefined', 'missing Wasm export: run_bi_astar');
+  _run_bi_astar = Module['_run_bi_astar'] = createExportWrapper('run_bi_astar', 4);
+  assert(typeof wasmExports['generate_random_maze'] != 'undefined', 'missing Wasm export: generate_random_maze');
   _generate_random_maze = Module['_generate_random_maze'] = createExportWrapper('generate_random_maze', 1);
+  assert(typeof wasmExports['get_node_walkable'] != 'undefined', 'missing Wasm export: get_node_walkable');
   _get_node_walkable = Module['_get_node_walkable'] = createExportWrapper('get_node_walkable', 2);
+  assert(typeof wasmExports['get_path_length'] != 'undefined', 'missing Wasm export: get_path_length');
   _get_path_length = Module['_get_path_length'] = createExportWrapper('get_path_length', 0);
+  assert(typeof wasmExports['get_path_x'] != 'undefined', 'missing Wasm export: get_path_x');
   _get_path_x = Module['_get_path_x'] = createExportWrapper('get_path_x', 1);
+  assert(typeof wasmExports['get_path_y'] != 'undefined', 'missing Wasm export: get_path_y');
   _get_path_y = Module['_get_path_y'] = createExportWrapper('get_path_y', 1);
+  assert(typeof wasmExports['is_visited'] != 'undefined', 'missing Wasm export: is_visited');
   _is_visited = Module['_is_visited'] = createExportWrapper('is_visited', 2);
+  assert(typeof wasmExports['get_node_g'] != 'undefined', 'missing Wasm export: get_node_g');
   _get_node_g = Module['_get_node_g'] = createExportWrapper('get_node_g', 2);
+  assert(typeof wasmExports['fflush'] != 'undefined', 'missing Wasm export: fflush');
   _fflush = createExportWrapper('fflush', 1);
+  assert(typeof wasmExports['emscripten_stack_init'] != 'undefined', 'missing Wasm export: emscripten_stack_init');
   _emscripten_stack_init = wasmExports['emscripten_stack_init'];
+  assert(typeof wasmExports['emscripten_stack_get_free'] != 'undefined', 'missing Wasm export: emscripten_stack_get_free');
   _emscripten_stack_get_free = wasmExports['emscripten_stack_get_free'];
+  assert(typeof wasmExports['emscripten_stack_get_base'] != 'undefined', 'missing Wasm export: emscripten_stack_get_base');
   _emscripten_stack_get_base = wasmExports['emscripten_stack_get_base'];
+  assert(typeof wasmExports['emscripten_stack_get_end'] != 'undefined', 'missing Wasm export: emscripten_stack_get_end');
   _emscripten_stack_get_end = wasmExports['emscripten_stack_get_end'];
+  assert(typeof wasmExports['_emscripten_stack_restore'] != 'undefined', 'missing Wasm export: _emscripten_stack_restore');
   __emscripten_stack_restore = wasmExports['_emscripten_stack_restore'];
+  assert(typeof wasmExports['_emscripten_stack_alloc'] != 'undefined', 'missing Wasm export: _emscripten_stack_alloc');
   __emscripten_stack_alloc = wasmExports['_emscripten_stack_alloc'];
+  assert(typeof wasmExports['emscripten_stack_get_current'] != 'undefined', 'missing Wasm export: emscripten_stack_get_current');
   _emscripten_stack_get_current = wasmExports['emscripten_stack_get_current'];
+  assert(typeof wasmExports['memory'] != 'undefined', 'missing Wasm export: memory');
   memory = wasmMemory = wasmExports['memory'];
+  assert(typeof wasmExports['__indirect_function_table'] != 'undefined', 'missing Wasm export: __indirect_function_table');
   __indirect_function_table = wasmExports['__indirect_function_table'];
 }
 
