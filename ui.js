@@ -362,7 +362,7 @@ Module.onRuntimeInitialized = () => {
             }
         });
         
-        showToast('Maze Generated', 'Random barriers (30% density) created!', 'success');
+        showToast('Maze Generated', 'Random barriers created!', 'success');
     });
     
     updateMode('barriers');
